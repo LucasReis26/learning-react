@@ -5,33 +5,30 @@ import { useState } from 'react';
 import style from './PostsList.module.css';
 
 function PostsLists({isPosting,onStopPosting}){
-	const [ enteredBody, setEnteredBody ] = useState('');
-	const [ enteredText, setEnteredText ] = useState('');
+	const [posts,setPosts] = useState([]);
 
-	function bodyChangeHandler(event){
-		setEnteredBody(event.target.value);
-	}
-	function textChangeHandler(event){
-		setEnteredText(event.target.value)
+	function addNewHandler(postData){
+		setPosts((existingPosts) => [postData, ...existingPosts]);
 	}
 
 	return(
 		<>
-			{ isPosting && 
-				(
-					<Modal onClose={onStopPosting}>
-						<NewPost 
-							onBodyChange={bodyChangeHandler}
-							onCancel={onStopPosting}
-							onTextChange={textChangeHandler}
-						/>
-					</Modal>
-				)
-			}
-			<ul className={style.posts}>
-				<Post author={enteredText} body={enteredBody} />
-				<Post author="Cleiton" body="Teste" />
-			</ul>
+			{ isPosting && (
+				<Modal onClose={onStopPosting}>
+					<NewPost onCancel={onStopPosting} onNewPost={addNewHandler}/>
+				</Modal>
+			)}
+			{ posts.length > 0 && (
+				<ul className={style.posts}>
+					{posts.map((post) => <Post key={post.body} author={post.author} body={post.body} />)}
+				</ul>
+			)}
+			{ posts.length === 0 && (
+				<div style={{textAlign: 'center', color: 'white'}}>
+					<h2>There are no posts yet</h2>
+					<p>Starting adding some!</p>
+				</div>
+			)}
 		</>
 	);
 }

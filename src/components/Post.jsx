@@ -9,4 +9,5 @@ function Post(props){
 		</li>
 	);
 }
+
 export default Post;
